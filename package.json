@@ -1,0 +1,29 @@
+{
+	"name": "@dnd-developer/ahj-homeworks-http-back",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"prestart": "npm install",
+		"start": "forever server.js",
+		"watch": "forever -w server.js"
+	},
+	"dependencies": {
+		"forever": "^2.0.0",
+		"koa": "^2.13.1",
+		"koa-body": "^4.2.0",
+		"koa-static": "^5.0.0",
+		"uuid": "^8.3.2"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/DnD-developer/ahj-homeworks-http-back.git"
+	},
+	"keywords": [],
+	"author": "@dnd-developer",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/DnD-developer/ahj-homeworks-http-back/issues"
+	},
+	"homepage": "https://github.com/DnD-developer/ahj-homeworks-http-back#readme"
+}
