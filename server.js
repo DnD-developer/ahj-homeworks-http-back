@@ -5,11 +5,40 @@ const Koa = require("koa")
 const koaBody = require("koa-body")
 const koaStatic = require("koa-static")
 const cors = require("@koa/cors")
-const uuid = require("uuid")
 
-const tickets = []
+const tickets = [
+	{
+		id: "1",
+		title: "Поменять красуку в принтере",
+		created: "10.03.19 08:40",
+		status: false
+	},
+	{
+		id: "2",
+		title: "Поменять красуку в принтере",
+		created: "10.03.19 08:40",
+		status: false
+	}
+]
 
-const ticketsFull = []
+const ticketsFull = [
+	{
+		id: "1",
+		title: "Поменять красуку в принтере",
+		created: "10.03.19 08:40",
+		status: false,
+		description:
+			"Ваше приложение должно реализовывать следующий функционал: Отображение всех тикетов Создание нового тикета Удаление тикета Изменение тикета Получение подробного описание тикета Отметка о выполнении каждого тикета"
+	},
+	{
+		id: "2",
+		title: "Поменять красуку в принтере",
+		created: "10.03.19 08:40",
+		status: false,
+		description:
+			"Ваше приложение должно реализовывать следующий функционал: Отображение всех тикетов Создание нового тикета Удаление тикета Изменение тикета Получение подробного описание тикета Отметка о выполнении каждого тикета"
+	}
+]
 
 const app = new Koa()
 
@@ -30,37 +59,44 @@ app.use(ctx => {
 			ctx.response.body = JSON.stringify(tickets)
 			return
 		case "createTicket":
-			const { name, description, status, created } = ctx.request.body
-			const id = uuid.v4()
+			const { id, title, description, status, created } = ctx.request.body
 
-			tickets.push({ idTicket, name, status, created })
-			ticketsFull.push({ idTicket, name, description, status, created })
+			tickets.push({ id, title, status, created })
+			ticketsFull.push({ id, title, description, status, created })
 
-			ctx.response.body = JSON.stringify({ id })
+			ctx.response.body = JSON.stringify("create OK")
 			return
 		case "ticketById":
-			({ id }) = ctx.request.query
+			ctx.response.body = JSON.stringify(ticketsFull.find(({ id }) => ctx.request.query.id === id).description)
 
-			ctx.response.body = ticketsFull.find(({ idTicket }) => id === idTicket)
 			return
 		case "deleteTicket":
-            ({ id }) = ctx.request.query
-
-            const idDeleteIndex = tickets.findIndex(({idTicket})=> id === idTicket)
-
-            tickets.splice(idDeleteIndex, 1)
-            ticketsFull.splice(idDeleteIndex, 1)
-			ctx.response.body = JSON.stringify(tickets)
+			const idDeleteIndex = tickets.findIndex(({ id }) => ctx.request.query.id === id)
+			tickets.splice(idDeleteIndex, 1)
+			ticketsFull.splice(idDeleteIndex, 1)
+			ctx.response.body = JSON.stringify(idDeleteIndex)
 			return
 		case "editTicket":
-            ({ id }) = ctx.request.query
+			const idEditIndex = tickets.findIndex(({ id }) => ctx.request.query.id === id)
+			const requstBody = ctx.request.body
+			const ticketForEdit = tickets[idEditIndex]
+			const ticketForEditFull = ticketsFull[idEditIndex]
 
-            const idEditIndex = tickets.findIndex(({idTicket})=> id === idTicket)
+			ticketForEdit.title = requstBody.title
 
-            tickets.splice(idEditIndex, 1, { idTicket, name, status, created })
-            ticketsFull.splice(idEditIndex, 1, { idTicket, name, description, status, created })
+			ticketForEditFull.description = requstBody.description
+			ticketForEditFull.title = requstBody.title
 
-			ctx.response.body = JSON.stringify(tickets)
+			ctx.response.body = JSON.stringify(idEditIndex)
+			return
+
+		case "checkTicket":
+			const idcheckIndex = tickets.findIndex(({ id }) => ctx.request.query.id === id)
+
+			tickets[idcheckIndex].status = ctx.request.body.status
+			ticketsFull[idcheckIndex].status = ctx.request.body.status
+
+			ctx.response.body = JSON.stringify(idcheckIndex)
 			return
 		default:
 			ctx.response.status = 200
